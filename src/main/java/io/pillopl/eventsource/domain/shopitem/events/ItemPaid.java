@@ -12,23 +12,23 @@ import java.util.UUID;
 @NoArgsConstructor
 public class ItemPaid implements DomainEvent {
 
-    public static final String TYPE = "item.paid";
+  public static final String TYPE = "item.paid";
 
-    private UUID uuid;
-    private Instant when;
+  private UUID uuid;
+  private Instant when;
 
-    @Override
-    public String type() {
-        return TYPE;
-    }
+  @Override
+  public String type() {
+    return TYPE;
+  }
 
-    @Override
-    public Instant when() {
-        return when;
-    }
+  @Override
+  public Instant when() {
+    return when;
+  }
 
-    @Override
-    public UUID uuid() {
-        return uuid;
-    }
+  @Override
+  public UUID uuid() {
+    return uuid;
+  }
 }

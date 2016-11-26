@@ -7,18 +7,20 @@ import java.time.Instant;
 import java.util.UUID;
 
 @JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
-        property = "type")
+  use = JsonTypeInfo.Id.NAME,
+  include = JsonTypeInfo.As.PROPERTY,
+  property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(name = ItemBought.TYPE, value = ItemBought.class),
-        @JsonSubTypes.Type(name = ItemPaymentTimeout.TYPE, value = ItemPaymentTimeout.class),
-        @JsonSubTypes.Type(name = ItemPaid.TYPE, value = ItemPaid.class)
+  @JsonSubTypes.Type(name = ItemBought.TYPE, value = ItemBought.class),
+  @JsonSubTypes.Type(name = ItemPaymentTimeout.TYPE, value = ItemPaymentTimeout.class),
+  @JsonSubTypes.Type(name = ItemPaid.TYPE, value = ItemPaid.class)
 })
 public interface DomainEvent {
 
-    String type();
-    Instant when();
-    UUID uuid();
+  String type();
+
+  Instant when();
+
+  UUID uuid();
 }
 

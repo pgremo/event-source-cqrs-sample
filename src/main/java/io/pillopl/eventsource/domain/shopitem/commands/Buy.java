@@ -9,8 +9,8 @@ import java.util.UUID;
 @Value
 public class Buy implements Command {
 
-    private final UUID uuid;
-    private final BigDecimal amount;
-    private final Instant when;
+  private final UUID uuid;
+  private final BigDecimal amount;
+  private final Instant when;
 
 }

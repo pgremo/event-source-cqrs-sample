@@ -19,44 +19,44 @@ import java.util.function.UnaryOperator;
 @Slf4j
 public class ShopItems {
 
-    private final ShopItemRepository itemRepository;
-    private final int hoursToPaymentTimeout;
+  private final ShopItemRepository itemRepository;
+  private final int hoursToPaymentTimeout;
 
-    @Autowired
-    public ShopItems(ShopItemRepository itemRepository, @Value("${hours.to.payment.timeout:48}") int hoursToPaymentTimeout) {
-        this.itemRepository = itemRepository;
-        this.hoursToPaymentTimeout = hoursToPaymentTimeout;
-    }
+  @Autowired
+  public ShopItems(ShopItemRepository itemRepository, @Value("${hours.to.payment.timeout:48}") int hoursToPaymentTimeout) {
+    this.itemRepository = itemRepository;
+    this.hoursToPaymentTimeout = hoursToPaymentTimeout;
+  }
 
-    public void buy(Buy command) {
-        withItem(command.getUuid(), tx ->
-                tx.buy(command.getUuid(), command.getWhen(), hoursToPaymentTimeout)
-        );
-        log.info("{} item bought at {}", command.getUuid(), command.getWhen());
-    }
+  public void buy(Buy command) {
+    withItem(command.getUuid(), tx ->
+      tx.buy(command.getUuid(), command.getWhen(), hoursToPaymentTimeout)
+    );
+    log.info("{} item bought at {}", command.getUuid(), command.getWhen());
+  }
 
-    public void pay(Pay command) {
-        withItem(command.getUuid(), tx ->
-                        tx.pay(command.getWhen())
-        );
-        log.info("{} item paid at {}", command.getUuid(), command.getWhen());
-    }
+  public void pay(Pay command) {
+    withItem(command.getUuid(), tx ->
+      tx.pay(command.getWhen())
+    );
+    log.info("{} item paid at {}", command.getUuid(), command.getWhen());
+  }
 
-    public void markPaymentTimeout(MarkPaymentTimeout command) {
-        withItem(command.getUuid(), tx ->
-                        tx.markTimeout(command.getWhen())
-        );
-        log.info("{} item marked as payment timeout at {}", command.getUuid(), command.getWhen());
-    }
+  public void markPaymentTimeout(MarkPaymentTimeout command) {
+    withItem(command.getUuid(), tx ->
+      tx.markTimeout(command.getWhen())
+    );
+    log.info("{} item marked as payment timeout at {}", command.getUuid(), command.getWhen());
+  }
 
-    public ShopItem getByUUID(UUID uuid) {
-        return itemRepository.getByUUID(uuid);
-    }
+  public ShopItem getByUUID(UUID uuid) {
+    return itemRepository.getByUUID(uuid);
+  }
 
-    private ShopItem withItem(UUID uuid, UnaryOperator<ShopItem> action) {
-        final ShopItem tx = getByUUID(uuid);
-        final ShopItem modified = action.apply(tx);
-        return itemRepository.save(modified);
-    }
+  private ShopItem withItem(UUID uuid, UnaryOperator<ShopItem> action) {
+    final ShopItem tx = getByUUID(uuid);
+    final ShopItem modified = action.apply(tx);
+    return itemRepository.save(modified);
+  }
 
 }

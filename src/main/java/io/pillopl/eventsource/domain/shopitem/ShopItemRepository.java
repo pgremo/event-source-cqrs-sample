@@ -5,10 +5,10 @@ import java.util.UUID;
 
 public interface ShopItemRepository {
 
-    ShopItem save(ShopItem aggregate) ;
+  ShopItem save(ShopItem aggregate);
 
-    ShopItem getByUUID(UUID uuid);
+  ShopItem getByUUID(UUID uuid);
 
-    ShopItem getByUUIDat(UUID uuid, Instant at);
+  ShopItem getByUUIDat(UUID uuid, Instant at);
 
 }

@@ -10,49 +10,49 @@ import static java.time.Instant.now
 
 class EventSerializerSpec extends Specification {
 
-    final String ANY_TYPE = "ANY_TYPE"
-    final String ANY_UUID = "9a94d251-5fdb-4f38-b308-9f72d2355467"
+  final String ANY_TYPE = "ANY_TYPE"
+  final String ANY_UUID = "9a94d251-5fdb-4f38-b308-9f72d2355467"
 
-    @Subject
-    EventSerializer eventSerializer = new EventSerializer()
+  @Subject
+  EventSerializer eventSerializer = new EventSerializer()
 
-    def "should parse ItemBought event"() {
-        given:
-            String body = """{
+  def "should parse ItemBought event"() {
+    given:
+    String body = """{
                 "type": "$ItemBought.TYPE",
                 "uuid": "$ANY_UUID",
                 "when": "2016-05-24T12:06:41.045Z"
                 }"""
-        when:
-            ItemBought event = eventSerializer.deserialize(new EventDescriptor(body, now(), ANY_TYPE))
-        then:
-            event.uuid.toString() == ANY_UUID
-    }
+    when:
+    ItemBought event = eventSerializer.deserialize(new EventDescriptor(body, now(), ANY_TYPE))
+    then:
+    event.uuid.toString() == ANY_UUID
+  }
 
-    def "should parse ItemPaid event"() {
-        given:
-            String body = """{
+  def "should parse ItemPaid event"() {
+    given:
+    String body = """{
                 "type": "$ItemPaid.TYPE",
                 "uuid": "$ANY_UUID",
                 "when": "2016-05-24T12:06:41.045Z"
                 }"""
-        when:
-            ItemPaid event = eventSerializer.deserialize(new EventDescriptor(body, now(), ANY_TYPE))
-        then:
-            event.uuid.toString() == ANY_UUID
-    }
+    when:
+    ItemPaid event = eventSerializer.deserialize(new EventDescriptor(body, now(), ANY_TYPE))
+    then:
+    event.uuid.toString() == ANY_UUID
+  }
 
-    def "should parse ItemPaymentTimeout event"() {
-        given:
-            String body = """{
+  def "should parse ItemPaymentTimeout event"() {
+    given:
+    String body = """{
                 "type": "$ItemPaymentTimeout.TYPE",
                 "uuid": "$ANY_UUID",
                 "when": "2016-05-24T12:06:41.045Z"
                 }"""
-        when:
-            ItemPaymentTimeout event = eventSerializer.deserialize(new EventDescriptor(body, now(), ANY_TYPE))
-        then:
-            event.uuid.toString() == ANY_UUID
-    }
+    when:
+    ItemPaymentTimeout event = eventSerializer.deserialize(new EventDescriptor(body, now(), ANY_TYPE))
+    then:
+    event.uuid.toString() == ANY_UUID
+  }
 
 }

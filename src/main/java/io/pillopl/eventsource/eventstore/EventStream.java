@@ -14,38 +14,38 @@ import static javax.persistence.FetchType.EAGER;
 @Entity(name = "event_streams")
 class EventStream {
 
-    @Id
-    @GeneratedValue(generator = "event_stream_seq", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "event_stream_seq", sequenceName = "event_stream_seq", allocationSize = 1)
-    private Long id;
+  @Id
+  @GeneratedValue(generator = "event_stream_seq", strategy = GenerationType.SEQUENCE)
+  @SequenceGenerator(name = "event_stream_seq", sequenceName = "event_stream_seq", allocationSize = 1)
+  private Long id;
 
-    @Getter
-    @Column(unique = true, nullable = false, name = "aggregate_uuid", length = 36)
-    private UUID aggregateUUID;
+  @Getter
+  @Column(unique = true, nullable = false, name = "aggregate_uuid", length = 36)
+  private UUID aggregateUUID;
 
-    @Version
-    @Column(nullable = false)
-    private long version;
+  @Version
+  @Column(nullable = false)
+  private long version;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = EAGER)
-    private List<EventDescriptor> events = new ArrayList<>();
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = EAGER)
+  private List<EventDescriptor> events = new ArrayList<>();
 
-    private EventStream() {
-    }
+  private EventStream() {
+  }
 
-    EventStream(UUID aggregateUUID) {
-        this.aggregateUUID = aggregateUUID;
-    }
+  EventStream(UUID aggregateUUID) {
+    this.aggregateUUID = aggregateUUID;
+  }
 
-    void addEvents(List<EventDescriptor> events) {
-        this.events.addAll(events);
-    }
+  void addEvents(List<EventDescriptor> events) {
+    this.events.addAll(events);
+  }
 
-    List<EventDescriptor> getEvents() {
-        return events
-                .stream()
-                .sorted(comparing(EventDescriptor::getOccurredAt))
-                .collect(toList());
-    }
+  List<EventDescriptor> getEvents() {
+    return events
+      .stream()
+      .sorted(comparing(EventDescriptor::getOccurredAt))
+      .collect(toList());
+  }
 
 }

@@ -10,27 +10,27 @@ def consoleAppender = true;
 
 // does hostname match pixie or orion?
 if (hostname =~ /pixie|orion/) {
-    WEBAPP_DIR = "/opt/myapp"
-    consoleAppender = false
+  WEBAPP_DIR = "/opt/myapp"
+  consoleAppender = false
 } else {
-    appenderList.add("CONSOLE")
+  appenderList.add("CONSOLE")
 }
 
 if (consoleAppender) {
-    appender("CONSOLE", ConsoleAppender) {
-        encoder(PatternLayoutEncoder) {
-            pattern = "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
-        }
+  appender("CONSOLE", ConsoleAppender) {
+    encoder(PatternLayoutEncoder) {
+      pattern = "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
     }
+  }
 }
 
 appender("ROLLING", RollingFileAppender) {
-    encoder(PatternLayoutEncoder) {
-        Pattern = "%d %level %thread %mdc %logger - %m%n"
-    }
-    rollingPolicy(TimeBasedRollingPolicy) {
-        FileNamePattern = "${WEBAPP_DIR}/log/translator-%d{yyyy-MM}.zip"
-    }
+  encoder(PatternLayoutEncoder) {
+    Pattern = "%d %level %thread %mdc %logger - %m%n"
+  }
+  rollingPolicy(TimeBasedRollingPolicy) {
+    FileNamePattern = "${WEBAPP_DIR}/log/translator-%d{yyyy-MM}.zip"
+  }
 }
 
 root(INFO, appenderList)

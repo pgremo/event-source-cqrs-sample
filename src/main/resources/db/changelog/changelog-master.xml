@@ -24,7 +24,7 @@
                              tableName="event_streams"/>
         <createIndex indexName="idx_aggregate_uuid_event_stream"
                      tableName="event_streams">
-            <column name="aggregate_uuid" />
+            <column name="aggregate_uuid"/>
         </createIndex>
 
         <createSequence schemaName="public" sequenceName="event_descriptors_seq"/>
@@ -42,7 +42,7 @@
                 <constraints nullable="false"/>
             </column>
             <column name="event_stream_id" type="int8">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
         </createTable>
         <addForeignKeyConstraint baseColumnNames="event_stream_id"
@@ -50,7 +50,7 @@
                                  constraintName="fk_event_desc_event_stream" deferrable="false"
                                  initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="id" referencedTableName="event_streams"
-                                 referencedTableSchemaName="public" />
+                                 referencedTableSchemaName="public"/>
     </changeSet>
 
     <changeSet id="2" author="pilo">
@@ -70,7 +70,7 @@
         </createTable>
         <createIndex indexName="idx_item_when_expires"
                      tableName="items">
-            <column name="when_payment_timeout" />
+            <column name="when_payment_timeout"/>
         </createIndex>
     </changeSet>
 

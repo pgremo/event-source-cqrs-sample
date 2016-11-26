@@ -12,23 +12,23 @@ import java.util.UUID;
 @NoArgsConstructor
 public class ItemPaymentTimeout implements DomainEvent {
 
-    public static final String TYPE = "item.payment.timeout";
+  public static final String TYPE = "item.payment.timeout";
 
-    private UUID uuid;
-    private Instant when;
+  private UUID uuid;
+  private Instant when;
 
-    @Override
-    public String type() {
-        return TYPE;
-    }
+  @Override
+  public String type() {
+    return TYPE;
+  }
 
-    @Override
-    public Instant when() {
-        return when;
-    }
+  @Override
+  public Instant when() {
+    return when;
+  }
 
-    @Override
-    public UUID uuid() {
-        return uuid;
-    }
+  @Override
+  public UUID uuid() {
+    return uuid;
+  }
 }

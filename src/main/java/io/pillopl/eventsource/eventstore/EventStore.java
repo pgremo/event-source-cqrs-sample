@@ -10,19 +10,19 @@ import static java.util.Collections.emptyList;
 
 interface EventStore extends JpaRepository<EventStream, Long> {
 
-    Optional<EventStream> findByAggregateUUID(UUID uuid);
+  Optional<EventStream> findByAggregateUUID(UUID uuid);
 
-    default void saveEvents(UUID aggregateId, List<EventDescriptor> events) {
-        final EventStream eventStream = findByAggregateUUID(aggregateId)
-                .orElseGet(() -> new EventStream(aggregateId));
-        eventStream.addEvents(events);
-        save(eventStream);
-    }
+  default void saveEvents(UUID aggregateId, List<EventDescriptor> events) {
+    final EventStream eventStream = findByAggregateUUID(aggregateId)
+      .orElseGet(() -> new EventStream(aggregateId));
+    eventStream.addEvents(events);
+    save(eventStream);
+  }
 
-    default List<EventDescriptor> getEventsForAggregate(UUID aggregateId) {
-        return findByAggregateUUID(aggregateId)
-                        .map(EventStream::getEvents)
-                        .orElse(emptyList());
+  default List<EventDescriptor> getEventsForAggregate(UUID aggregateId) {
+    return findByAggregateUUID(aggregateId)
+      .map(EventStream::getEvents)
+      .orElse(emptyList());
 
-    }
+  }
 }

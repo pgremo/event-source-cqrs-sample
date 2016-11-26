@@ -14,29 +14,29 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKN
 @Component
 class EventSerializer {
 
-    private final ObjectMapper objectMapper;
+  private final ObjectMapper objectMapper;
 
-    EventSerializer() {
-        this.objectMapper = new ObjectMapper();
-        objectMapper.configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    }
+  EventSerializer() {
+    this.objectMapper = new ObjectMapper();
+    objectMapper.configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
+    objectMapper.registerModule(new JavaTimeModule());
+    objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+  }
 
-    EventDescriptor serialize(DomainEvent event) {
-        try {
-            return new EventDescriptor(objectMapper.writeValueAsString(event), event.when(), event.type());
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+  EventDescriptor serialize(DomainEvent event) {
+    try {
+      return new EventDescriptor(objectMapper.writeValueAsString(event), event.when(), event.type());
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
     }
+  }
 
-    DomainEvent deserialize(EventDescriptor eventDescriptor) {
-        try {
-            return objectMapper.readValue(eventDescriptor.getBody(), DomainEvent.class);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+  DomainEvent deserialize(EventDescriptor eventDescriptor) {
+    try {
+      return objectMapper.readValue(eventDescriptor.getBody(), DomainEvent.class);
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
+  }
 
 }
