@@ -6,7 +6,7 @@ import io.pillopl.eventsource.domain.shopitem.events.ItemPaid;
 import io.pillopl.eventsource.domain.shopitem.events.ItemPaymentTimeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.event.TransactionalEventListener;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class ReadModelOnDomainEventUpdater {
@@ -18,7 +18,7 @@ public class ReadModelOnDomainEventUpdater {
     this.jdbcReadModelUpdater = jdbcReadModelUpdater;
   }
 
-  @TransactionalEventListener
+  @Transactional
   public void handle(DomainEvent event) {
     if (event instanceof ItemBought) {
       final ItemBought itemBought = (ItemBought) event;

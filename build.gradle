@@ -18,6 +18,7 @@ version = '1.0.0-SNAPSHOT'
 dependencies {
   compile 'org.springframework.boot:spring-boot-starter-web',
     'org.springframework.boot:spring-boot-starter-data-jpa',
+    'org.springframework.boot:spring-boot-starter-integration',
     'org.projectlombok:lombok',
     'com.fasterxml.jackson.core:jackson-databind',
     'com.fasterxml.jackson.datatype:jackson-datatype-jsr310',

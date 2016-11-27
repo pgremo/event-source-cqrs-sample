@@ -4,6 +4,7 @@ package io.pillopl.eventsource.eventstore;
 import io.pillopl.eventsource.domain.shopitem.ShopItem;
 import io.pillopl.eventsource.domain.shopitem.ShopItemRepository;
 import io.pillopl.eventsource.domain.shopitem.events.DomainEvent;
+import io.pillopl.eventsource.domain.shopitem.events.EventBusGateway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
@@ -19,13 +20,13 @@ public class EventSourcedShopItemRepository implements ShopItemRepository {
 
   private final EventStore eventStore;
   private final EventSerializer eventSerializer;
-  private final ApplicationEventPublisher eventPublisher;
+  private final EventBusGateway gateway;
 
   @Autowired
-  public EventSourcedShopItemRepository(EventStore eventStore, EventSerializer eventSerializer, ApplicationEventPublisher eventPublisher) {
+  public EventSourcedShopItemRepository(EventStore eventStore, EventSerializer eventSerializer, ApplicationEventPublisher eventPublisher, EventBusGateway gateway) {
     this.eventStore = eventStore;
     this.eventSerializer = eventSerializer;
-    this.eventPublisher = eventPublisher;
+    this.gateway = gateway;
   }
 
   @Override
@@ -37,7 +38,7 @@ public class EventSourcedShopItemRepository implements ShopItemRepository {
         .stream()
         .map(eventSerializer::serialize)
         .collect(toList()));
-    pendingEvents.forEach(eventPublisher::publishEvent);
+    pendingEvents.forEach(gateway::publish);
     return aggregate.markChangesAsCommitted();
   }
 
