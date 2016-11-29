@@ -1,6 +1,5 @@
 package io.pillopl.eventsource.readmodel;
 
-import io.pillopl.eventsource.domain.shopitem.events.DomainEvent;
 import io.pillopl.eventsource.domain.shopitem.events.ItemBought;
 import io.pillopl.eventsource.domain.shopitem.events.ItemPaid;
 import io.pillopl.eventsource.domain.shopitem.events.ItemPaymentTimeout;
@@ -19,17 +18,18 @@ public class ReadModelOnDomainEventUpdater {
   }
 
   @Transactional
-  public void handle(DomainEvent event) {
-    if (event instanceof ItemBought) {
-      final ItemBought itemBought = (ItemBought) event;
-      jdbcReadModelUpdater.updateOrCreateItemAsBlocked(event.uuid(), event.when(), itemBought.getPaymentTimeoutDate());
-    } else if (event instanceof ItemPaid) {
-      jdbcReadModelUpdater.updateItemAsPaid(event.uuid(), event.when());
-    } else if (event instanceof ItemPaymentTimeout) {
-      jdbcReadModelUpdater.updateItemAsPaymentMissing(event.uuid(), event.when());
-    } else {
-      throw new IllegalArgumentException("Cannot handle event " + event.getClass());
-    }
+  public void handle(ItemPaymentTimeout item) {
+    jdbcReadModelUpdater.updateItemAsPaymentMissing(item.uuid(), item.when());
+  }
+
+  @Transactional
+  public void handle(ItemPaid item) {
+    jdbcReadModelUpdater.updateItemAsPaid(item.uuid(), item.when());
+  }
+
+  @Transactional
+  public void handle(ItemBought item) {
+    jdbcReadModelUpdater.updateOrCreateItemAsBlocked(item.uuid(), item.when(), item.getPaymentTimeoutDate());
   }
 
 }

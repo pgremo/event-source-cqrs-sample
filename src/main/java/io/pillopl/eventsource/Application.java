@@ -1,6 +1,8 @@
 package io.pillopl.eventsource;
 
-import io.pillopl.eventsource.domain.shopitem.events.DomainEvent;
+import io.pillopl.eventsource.domain.shopitem.events.ItemBought;
+import io.pillopl.eventsource.domain.shopitem.events.ItemPaid;
+import io.pillopl.eventsource.domain.shopitem.events.ItemPaymentTimeout;
 import io.pillopl.eventsource.readmodel.ReadModelOnDomainEventUpdater;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -12,7 +14,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
-import org.springframework.integration.dsl.support.GenericHandler;
+import org.springframework.integration.handler.MethodInvokingMessageHandler;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -29,13 +31,13 @@ public class Application {
 
   @Bean
   public IntegrationFlow eventBusOutFlow() {
-    GenericHandler<DomainEvent> handler = (p, h) -> {
-      readModelUpdater.handle(p);
-      return null;
-    };
-
+    MethodInvokingMessageHandler handler = new MethodInvokingMessageHandler(readModelUpdater, "handle");
     return IntegrationFlows.from("events")
-      .handle(DomainEvent.class, handler)
+      .<Object, Class<?>>route(Object::getClass, m -> m
+        .subFlowMapping(ItemBought.class.getName(), sf -> sf.handle(handler))
+        .subFlowMapping(ItemPaymentTimeout.class.getName(), sf -> sf.handle(handler))
+        .subFlowMapping(ItemPaid.class.getName(), sf -> sf.handle(handler))
+        .get())
       .get();
   }
 
