@@ -52,7 +52,7 @@ class JdbcReadModel {
     jdbcTemplate.update(UPDATE_PAYMENT_MISSING_SQL, from(when), uuid);
   }
 
-  ShopItemDto getItemBy(UUID uuid) {
-    return jdbcTemplate.queryForObject(QUERY_FOR_ITEM_SQL, new Object[]{uuid}, new BeanPropertyRowMapper<>(ShopItemDto.class));
+  ShopItemView getItemBy(UUID uuid) {
+    return jdbcTemplate.queryForObject(QUERY_FOR_ITEM_SQL, new Object[]{uuid}, new BeanPropertyRowMapper<>(ShopItemView.class));
   }
 }

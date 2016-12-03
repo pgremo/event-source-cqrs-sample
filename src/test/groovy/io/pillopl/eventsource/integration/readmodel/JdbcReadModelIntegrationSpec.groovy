@@ -3,9 +3,8 @@ package io.pillopl.eventsource.integration.readmodel
 import io.pillopl.eventsource.boundary.ShopItems
 import io.pillopl.eventsource.integration.IntegrationSpec
 import io.pillopl.eventsource.readmodel.JdbcReadModel
-import io.pillopl.eventsource.readmodel.ShopItemDto
+import io.pillopl.eventsource.readmodel.ShopItemView
 import org.springframework.beans.factory.annotation.Autowired
-import spock.lang.Ignore
 import spock.lang.Subject
 
 import java.time.Instant
@@ -31,7 +30,7 @@ class JdbcReadModelIntegrationSpec extends IntegrationSpec {
     UUID itemUUID = UUID.randomUUID()
     shopItems.buy(buyItemCommand(itemUUID, ANY_TIME))
     then:
-    ShopItemDto tx = readModel.getItemBy(itemUUID)
+    ShopItemView tx = readModel.getItemBy(itemUUID)
     tx.uuid == itemUUID.toString()
     tx.status == 'BOUGHT'
     tx.when_bought.toInstant() == ANY_TIME
@@ -47,7 +46,7 @@ class JdbcReadModelIntegrationSpec extends IntegrationSpec {
     and:
     shopItems.buy(buyItemCommand(itemUUID, ANY_OTHER_TIME))
     then:
-    ShopItemDto tx = readModel.getItemBy(itemUUID)
+    ShopItemView tx = readModel.getItemBy(itemUUID)
     tx.when_bought.toInstant() == ANY_TIME
   }
 
@@ -58,7 +57,7 @@ class JdbcReadModelIntegrationSpec extends IntegrationSpec {
     and:
     shopItems.pay(payItemCommand(itemUUID, ANY_OTHER_TIME))
     then:
-    ShopItemDto tx = readModel.getItemBy(itemUUID)
+    ShopItemView tx = readModel.getItemBy(itemUUID)
     tx.when_paid.toInstant() == ANY_OTHER_TIME
   }
 
@@ -71,7 +70,7 @@ class JdbcReadModelIntegrationSpec extends IntegrationSpec {
     and:
     shopItems.pay(payItemCommand(itemUUID, YET_ANOTHER_TIME))
     then:
-    ShopItemDto tx = readModel.getItemBy(itemUUID)
+    ShopItemView tx = readModel.getItemBy(itemUUID)
     tx.when_paid.toInstant() == ANY_OTHER_TIME
   }
 
@@ -82,7 +81,7 @@ class JdbcReadModelIntegrationSpec extends IntegrationSpec {
     and:
     shopItems.markPaymentTimeout(markPaymentTimeoutCommand(itemUUID, ANY_OTHER_TIME))
     then:
-    ShopItemDto tx = readModel.getItemBy(itemUUID)
+    ShopItemView tx = readModel.getItemBy(itemUUID)
     tx.when_payment_marked_as_missing.toInstant() == ANY_OTHER_TIME
   }
 
@@ -95,7 +94,7 @@ class JdbcReadModelIntegrationSpec extends IntegrationSpec {
     and:
     shopItems.markPaymentTimeout(markPaymentTimeoutCommand(itemUUID, YET_ANOTHER_TIME))
     then:
-    ShopItemDto tx = readModel.getItemBy(itemUUID)
+    ShopItemView tx = readModel.getItemBy(itemUUID)
     tx.when_payment_marked_as_missing.toInstant() == ANY_OTHER_TIME
   }
 

@@ -4,14 +4,14 @@ package io.pillopl.eventsource.eventstore;
 import io.pillopl.eventsource.domain.shopitem.ShopItem;
 import io.pillopl.eventsource.domain.shopitem.ShopItemRepository;
 import io.pillopl.eventsource.domain.shopitem.events.DomainEvent;
-import io.pillopl.eventsource.domain.shopitem.events.EventBusGateway;
+import io.pillopl.eventsource.domain.shopitem.events.EventGateway;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -20,10 +20,10 @@ public class EventSourcedShopItemRepository implements ShopItemRepository {
 
   private final EventStore eventStore;
   private final EventSerializer eventSerializer;
-  private final EventBusGateway gateway;
+  private final EventGateway gateway;
 
   @Autowired
-  public EventSourcedShopItemRepository(EventStore eventStore, EventSerializer eventSerializer, ApplicationEventPublisher eventPublisher, EventBusGateway gateway) {
+  public EventSourcedShopItemRepository(EventStore eventStore, EventSerializer eventSerializer, EventGateway gateway) {
     this.eventStore = eventStore;
     this.eventSerializer = eventSerializer;
     this.gateway = gateway;
@@ -44,24 +44,21 @@ public class EventSourcedShopItemRepository implements ShopItemRepository {
 
   @Override
   public ShopItem getByUUID(UUID uuid) {
-    return ShopItem.from(uuid, getRelatedEvents(uuid));
+    return ShopItem.from(uuid, getRelatedEvents(uuid).collect(toList()));
   }
 
   @Override
   public ShopItem getByUUIDat(UUID uuid, Instant at) {
     return ShopItem.from(uuid,
       getRelatedEvents(uuid)
-        .stream()
         .filter(evt -> !evt.when().isAfter(at))
         .collect(toList()));
   }
 
-
-  private List<DomainEvent> getRelatedEvents(UUID uuid) {
+  private Stream<DomainEvent> getRelatedEvents(UUID uuid) {
     return eventStore.getEventsForAggregate(uuid)
       .stream()
-      .map(eventSerializer::deserialize)
-      .collect(toList());
+      .map(eventSerializer::deserialize);
   }
 
 }

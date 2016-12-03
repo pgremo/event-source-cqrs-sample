@@ -11,7 +11,7 @@ import java.time.Instant
 import static java.time.Instant.now
 import static java.util.UUID.randomUUID
 
-class ReadModelPopulatorSpec extends Specification {
+class ItemPaidReadModelPopulatorSpec extends Specification {
 
   private static final UUID ANY_UUID = randomUUID()
   private static final Instant ANY_DATE = now()
@@ -20,26 +20,12 @@ class ReadModelPopulatorSpec extends Specification {
   JdbcReadModel jdbcReadModel = Mock()
 
   @Subject
-  ReadModelOnDomainEventUpdater ReadModelUpdater = new ReadModelOnDomainEventUpdater(jdbcReadModel)
-
-  def 'should update or create bought item when receiving bought item event'() {
-    when:
-    ReadModelUpdater.handle(new ItemBought(ANY_UUID, ANY_DATE, ANY_PAYMENT_TIMEOUT))
-    then:
-    1 * jdbcReadModel.updateOrCreateItemAsBlocked(ANY_UUID, ANY_DATE, ANY_PAYMENT_TIMEOUT)
-  }
+  ItemPaidEventHandler ReadModelUpdater = new ItemPaidEventHandler(jdbcReadModel)
 
   def 'should update item when receiving item paid event'() {
     when:
     ReadModelUpdater.handle(new ItemPaid(ANY_UUID, ANY_DATE))
     then:
     1 * jdbcReadModel.updateItemAsPaid(ANY_UUID, ANY_DATE)
-  }
-
-  def 'should update item when receiving payment timeout event'() {
-    when:
-    ReadModelUpdater.handle(new ItemPaymentTimeout(ANY_UUID, ANY_DATE))
-    then:
-    1 * jdbcReadModel.updateItemAsPaymentMissing(ANY_UUID, ANY_DATE)
   }
 }

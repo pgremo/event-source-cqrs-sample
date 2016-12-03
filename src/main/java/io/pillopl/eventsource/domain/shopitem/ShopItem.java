@@ -44,26 +44,18 @@ public class ShopItem {
 
   public ShopItem pay(Instant when) {
     throwIfStateIs(INITIALIZED, "Cannot pay for not existing item");
-    if (state != PAID) {
-      return applyChange(new ItemPaid(uuid, when));
-    } else {
-      return this;
-    }
+    return state == PAID ? this : applyChange(new ItemPaid(uuid, when));
   }
 
   public ShopItem markTimeout(Instant when) {
     throwIfStateIs(INITIALIZED, "Payment is not missing yet");
     throwIfStateIs(PAID, "Item already paid");
-    if (state == BOUGHT) {
-      return applyChange(new ItemPaymentTimeout(uuid, when));
-    } else {
-      return this;
-    }
+    return state == BOUGHT ? applyChange(new ItemPaymentTimeout(uuid, when)) : this;
   }
 
   private void throwIfStateIs(ShopItemState unexpectedState, String msg) {
     if (state == unexpectedState) {
-      throw new IllegalStateException(msg + (" UUID: " + uuid));
+      throw new IllegalStateException(String.format("%s UUID: %s", msg, uuid));
     }
   }
 
@@ -92,7 +84,7 @@ public class ShopItem {
   }
 
   private ShopItem applyChange(DomainEvent event, boolean isNew) {
-    final ShopItem item = this.apply(event);
+    final ShopItem item = apply(event);
     if (isNew) {
       return new ShopItem(item.getUuid(), appendChange(item, event), item.getState());
     } else {
@@ -106,13 +98,13 @@ public class ShopItem {
 
   private ShopItem apply(DomainEvent event) {
     if (event instanceof ItemPaid) {
-      return this.apply((ItemPaid) event);
+      return apply((ItemPaid) event);
     } else if (event instanceof ItemBought) {
-      return this.apply((ItemBought) event);
+      return apply((ItemBought) event);
     } else if (event instanceof ItemPaymentTimeout) {
-      return this.apply((ItemPaymentTimeout) event);
+      return apply((ItemPaymentTimeout) event);
     } else {
-      throw new IllegalArgumentException("Cannot handle event " + event.getClass());
+      throw new IllegalArgumentException(String.format("Cannot handle event %s", event.getClass()));
     }
   }
 

@@ -5,7 +5,7 @@ import lombok.Data;
 import java.sql.Timestamp;
 
 @Data
-public class ShopItemDto {
+public class ShopItemView {
 
   private Long id;
   private String uuid;
