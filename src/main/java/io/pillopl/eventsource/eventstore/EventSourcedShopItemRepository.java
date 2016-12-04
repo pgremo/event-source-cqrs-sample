@@ -31,7 +31,7 @@ public class EventSourcedShopItemRepository implements ShopItemRepository {
 
   @Override
   public ShopItem save(ShopItem aggregate) {
-    final List<DomainEvent> pendingEvents = aggregate.getUncommittedChanges();
+    List<DomainEvent> pendingEvents = aggregate.getUncommittedChanges();
     eventStore.saveEvents(
       aggregate.getUuid(),
       pendingEvents

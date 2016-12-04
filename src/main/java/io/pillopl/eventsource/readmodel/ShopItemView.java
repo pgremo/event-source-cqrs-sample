@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 
 @Data
 public class ShopItemView {
-
   private Long id;
   private String uuid;
   private String status;

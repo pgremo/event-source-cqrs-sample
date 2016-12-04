@@ -6,7 +6,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Value
-public class MarkPaymentTimeout implements Command {
+public class MarkPaymentTimeout {
 
   private final UUID uuid;
   private final Instant when;
