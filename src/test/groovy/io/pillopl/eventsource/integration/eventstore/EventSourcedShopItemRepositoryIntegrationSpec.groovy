@@ -1,7 +1,7 @@
 package io.pillopl.eventsource.integration.eventstore
 
 import io.pillopl.eventsource.domain.shopitem.ShopItem
-import io.pillopl.eventsource.eventstore.EventSourcedShopItemRepository
+import io.pillopl.eventsource.eventstore.ShopItemRepository
 import io.pillopl.eventsource.integration.IntegrationSpec
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Subject
@@ -26,7 +26,7 @@ class EventSourcedShopItemRepositoryIntegrationSpec extends IntegrationSpec {
 
   @Subject
   @Autowired
-  EventSourcedShopItemRepository shopItemRepository
+  ShopItemRepository shopItemRepository
 
   def 'should store and load item'() {
     given:

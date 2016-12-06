@@ -11,6 +11,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static io.pillopl.eventsource.domain.shopitem.ShopItemState.*;
 import static java.util.Collections.emptyList;
@@ -71,9 +72,8 @@ public class ShopItem {
     return new ShopItem(event.getUuid(), changes, PAYMENT_MISSING);
   }
 
-  public static ShopItem from(UUID uuid, List<DomainEvent> history) {
+  public static ShopItem from(UUID uuid, Stream<DomainEvent> history) {
     return history
-      .stream()
       .reduce(
         new ShopItem(uuid, emptyList(), INITIALIZED),
         (tx, event) -> tx.applyChange(event, false),

@@ -6,7 +6,6 @@ import io.pillopl.eventsource.readmodel.JdbcReadModel
 import io.pillopl.eventsource.readmodel.PaymentTimeoutChecker
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.annotation.DirtiesContext
 import spock.lang.Subject
 
 import static io.pillopl.eventsource.CommandFixture.buyItemCommand
@@ -15,8 +14,7 @@ import static java.time.Instant.now
 import static java.time.temporal.ChronoUnit.HOURS
 import static java.util.UUID.randomUUID
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-@SpringBootTest(properties='spring.datasource.name=${random.value}')
+@SpringBootTest(properties = 'spring.datasource.name=${random.value}')
 class PaymentTimeoutCheckerIntegrationSpec extends IntegrationSpec {
 
   private static final UUID WILL_TIMEOUT = randomUUID()

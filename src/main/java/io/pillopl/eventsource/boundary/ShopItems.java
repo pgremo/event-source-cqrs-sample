@@ -1,7 +1,7 @@
 package io.pillopl.eventsource.boundary;
 
 import io.pillopl.eventsource.domain.shopitem.ShopItem;
-import io.pillopl.eventsource.domain.shopitem.ShopItemRepository;
+import io.pillopl.eventsource.domain.shopitem.Repository;
 import io.pillopl.eventsource.domain.shopitem.commands.Buy;
 import io.pillopl.eventsource.domain.shopitem.commands.MarkPaymentTimeout;
 import io.pillopl.eventsource.domain.shopitem.commands.Pay;
@@ -19,11 +19,11 @@ import java.util.function.UnaryOperator;
 @Slf4j
 public class ShopItems {
 
-  private final ShopItemRepository itemRepository;
+  private final Repository<ShopItem> itemRepository;
   private final int hoursToPaymentTimeout;
 
   @Autowired
-  public ShopItems(ShopItemRepository itemRepository, @Value("${hours.to.payment.timeout:48}") int hoursToPaymentTimeout) {
+  public ShopItems(Repository<ShopItem> itemRepository, @Value("${hours.to.payment.timeout:48}") int hoursToPaymentTimeout) {
     this.itemRepository = itemRepository;
     this.hoursToPaymentTimeout = hoursToPaymentTimeout;
   }
@@ -54,8 +54,8 @@ public class ShopItems {
   }
 
   private ShopItem withItem(UUID uuid, UnaryOperator<ShopItem> action) {
-    final ShopItem tx = getByUUID(uuid);
-    final ShopItem modified = action.apply(tx);
+    ShopItem tx = getByUUID(uuid);
+    ShopItem modified = action.apply(tx);
     return itemRepository.save(modified);
   }
 
