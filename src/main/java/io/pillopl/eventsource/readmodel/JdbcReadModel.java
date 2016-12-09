@@ -27,8 +27,8 @@ public class JdbcReadModel {
   private static final String UPDATE_PAYMENT_MISSING_SQL
     = "UPDATE items SET when_payment_marked_as_missing = ?, status = 'PAYMENT_MISSING' WHERE when_payment_marked_as_missing IS NULL AND uuid = ?";
 
-  private static final String QUERY_FOR_ITEM_SQL =
-    "SELECT * FROM items WHERE uuid = ?";
+  private static final String QUERY_FOR_ITEM_SQL
+    = "SELECT * FROM items WHERE uuid = ?";
 
   private final JdbcTemplate jdbcTemplate;
 
