@@ -11,7 +11,7 @@ import java.util.UUID;
 import static java.sql.Timestamp.from;
 
 @Component
-class JdbcReadModel {
+public class JdbcReadModel {
 
   private static final String UPDATE_BOUGHT_ITEM_SQL
     = "UPDATE items SET when_payment_timeout = ?, status = 'BOUGHT' WHERE uuid = ? AND when_payment_timeout IS NULL";
@@ -52,7 +52,7 @@ class JdbcReadModel {
     jdbcTemplate.update(UPDATE_PAYMENT_MISSING_SQL, from(when), uuid);
   }
 
-  ShopItemView getItemBy(UUID uuid) {
+  public ShopItemView getItemBy(UUID uuid) {
     return jdbcTemplate.queryForObject(QUERY_FOR_ITEM_SQL, new Object[]{uuid}, new BeanPropertyRowMapper<>(ShopItemView.class));
   }
 }

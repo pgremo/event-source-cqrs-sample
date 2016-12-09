@@ -17,7 +17,7 @@ public class ItemPaymentTimeoutEventhandler {
   }
 
   @Transactional
-  @ServiceActivator(inputChannel = "events")
+  @ServiceActivator(inputChannel = "events-in")
   public void handle(ItemPaymentTimeout item) {
     jdbcReadModelUpdater.updateItemAsPaymentMissing(item.uuid(), item.when());
   }

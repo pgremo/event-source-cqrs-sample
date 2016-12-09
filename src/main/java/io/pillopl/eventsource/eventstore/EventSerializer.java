@@ -17,15 +17,15 @@ class EventSerializer {
   private final ObjectMapper objectMapper;
 
   EventSerializer() {
-    this.objectMapper = new ObjectMapper();
-    objectMapper.configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
-    objectMapper.registerModule(new JavaTimeModule());
-    objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    objectMapper = new ObjectMapper()
+      .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
+      .registerModule(new JavaTimeModule())
+      .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
   }
 
   EventDescriptor serialize(DomainEvent event) {
     try {
-      return new EventDescriptor(objectMapper.writeValueAsString(event), event.when(), event.type());
+      return new EventDescriptor(objectMapper.writeValueAsString(event), event.uuid(), event.when(), event.type());
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
@@ -38,5 +38,4 @@ class EventSerializer {
       throw new RuntimeException(e);
     }
   }
-
 }

@@ -4,9 +4,10 @@ import lombok.Getter;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.UUID;
 
-@Entity(name = "event_descriptors")
-class EventDescriptor {
+@Entity
+public class EventDescriptor {
 
   @Id
   @GeneratedValue(generator = "event_descriptors_seq", strategy = GenerationType.SEQUENCE)
@@ -15,23 +16,29 @@ class EventDescriptor {
   private Long id;
 
   @Getter
+  @Column(nullable = false)
+  private UUID aggregateId;
+
+  @Getter
   @Column(nullable = false, length = 600)
   private String body;
 
   @Getter
-  @Column(nullable = false, name = "occurred_at")
+  @Column(nullable = false)
   private Instant occurredAt = Instant.now();
 
   @Getter
   @Column(nullable = false, length = 60)
   private String type;
 
-  EventDescriptor(String body, Instant occurredAt, String type) {
+  EventDescriptor(String body, UUID aggregateId, Instant occurredAt, String type) {
     this.body = body;
+    this.aggregateId = aggregateId;
     this.occurredAt = occurredAt;
     this.type = type;
   }
 
+  @SuppressWarnings("unused")
   private EventDescriptor() {
   }
 }

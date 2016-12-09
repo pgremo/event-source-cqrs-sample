@@ -17,7 +17,7 @@ public class ItemBoughtEventHandler {
   }
 
   @Transactional
-  @ServiceActivator(inputChannel = "events")
+  @ServiceActivator(inputChannel = "events-in")
   public void handle(ItemBought item) {
     jdbcReadModelUpdater.updateOrCreateItemAsBlocked(item.uuid(), item.when(), item.getPaymentTimeoutDate());
   }

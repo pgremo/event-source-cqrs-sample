@@ -1,8 +1,6 @@
 package io.pillopl.eventsource.readmodel
 
 import io.pillopl.eventsource.domain.shopitem.events.ItemBought
-import io.pillopl.eventsource.domain.shopitem.events.ItemPaid
-import io.pillopl.eventsource.domain.shopitem.events.ItemPaymentTimeout
 import spock.lang.Specification
 import spock.lang.Subject
 

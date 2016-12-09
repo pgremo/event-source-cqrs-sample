@@ -17,7 +17,9 @@ import java.util.UUID;
 })
 public interface DomainEvent {
 
-  String type();
+  default String type() {
+    return getClass().getName();
+  }
 
   Instant when();
 

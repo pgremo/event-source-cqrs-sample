@@ -12,8 +12,8 @@ import static java.util.Collections.emptyList;
 
 public class ShopItemFixture {
 
-  public static final Instant ANY_TIME = now();
-  public static final int ANY_NUMBER_OF_HOURS_TO_PAYMENT_TIMEOUT = 48;
+  private static final Instant ANY_TIME = now();
+  private static final int ANY_NUMBER_OF_HOURS_TO_PAYMENT_TIMEOUT = 48;
 
 
   public static ShopItem initialized() {

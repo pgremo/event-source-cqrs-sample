@@ -17,7 +17,7 @@ public class ItemPaidEventHandler {
   }
 
   @Transactional
-  @ServiceActivator(inputChannel = "events")
+  @ServiceActivator(inputChannel = "events-in")
   public void handle(ItemPaid item) {
     jdbcReadModelUpdater.updateItemAsPaid(item.uuid(), item.when());
   }

@@ -18,13 +18,13 @@ import static java.util.stream.Collectors.toList;
 @Component
 public class ShopItemRepository implements Repository<ShopItem> {
 
-  private final EventStore eventStore;
+  private final EventDescriptorRepository eventStreamStore;
   private final EventSerializer eventSerializer;
   private final EventGateway gateway;
 
   @Autowired
-  public ShopItemRepository(EventStore eventStore, EventSerializer eventSerializer, EventGateway gateway) {
-    this.eventStore = eventStore;
+  public ShopItemRepository(EventDescriptorRepository eventStreamStore, EventSerializer eventSerializer, EventGateway gateway) {
+    this.eventStreamStore = eventStreamStore;
     this.eventSerializer = eventSerializer;
     this.gateway = gateway;
   }
@@ -32,13 +32,11 @@ public class ShopItemRepository implements Repository<ShopItem> {
   @Override
   public ShopItem save(ShopItem aggregate) {
     List<DomainEvent> pendingEvents = aggregate.getUncommittedChanges();
-    eventStore.saveEvents(
-      aggregate.getUuid(),
-      pendingEvents
+    eventStreamStore.save(pendingEvents
         .stream()
         .map(eventSerializer::serialize)
         .collect(toList()));
-    pendingEvents.forEach(gateway::publish);
+    gateway.publish(pendingEvents);
     return aggregate.markChangesAsCommitted();
   }
 
@@ -55,8 +53,7 @@ public class ShopItemRepository implements Repository<ShopItem> {
   }
 
   private Stream<DomainEvent> getRelatedEvents(UUID uuid) {
-    return eventStore.getEventsForAggregate(uuid)
-      .stream()
+    return eventStreamStore.findByAggregateIdOrderById(uuid)
       .map(eventSerializer::deserialize);
   }
 

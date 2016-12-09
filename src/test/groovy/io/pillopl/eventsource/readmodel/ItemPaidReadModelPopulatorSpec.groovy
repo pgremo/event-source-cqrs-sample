@@ -1,8 +1,6 @@
 package io.pillopl.eventsource.readmodel
 
-import io.pillopl.eventsource.domain.shopitem.events.ItemBought
 import io.pillopl.eventsource.domain.shopitem.events.ItemPaid
-import io.pillopl.eventsource.domain.shopitem.events.ItemPaymentTimeout
 import spock.lang.Specification
 import spock.lang.Subject
 
@@ -15,7 +13,6 @@ class ItemPaidReadModelPopulatorSpec extends Specification {
 
   private static final UUID ANY_UUID = randomUUID()
   private static final Instant ANY_DATE = now()
-  private static final Instant ANY_PAYMENT_TIMEOUT = now()
 
   JdbcReadModel jdbcReadModel = Mock()
 
