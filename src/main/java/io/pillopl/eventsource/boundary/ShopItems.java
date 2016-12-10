@@ -19,11 +19,11 @@ import java.util.function.UnaryOperator;
 @Slf4j
 public class ShopItems {
 
-  private final Repository<ShopItem> itemRepository;
+  private final Repository<ShopItem, UUID> itemRepository;
   private final int hoursToPaymentTimeout;
 
   @Autowired
-  public ShopItems(Repository<ShopItem> itemRepository, @Value("${hours.to.payment.timeout:48}") int hoursToPaymentTimeout) {
+  public ShopItems(Repository<ShopItem, UUID> itemRepository, @Value("${hours.to.payment.timeout:48}") int hoursToPaymentTimeout) {
     this.itemRepository = itemRepository;
     this.hoursToPaymentTimeout = hoursToPaymentTimeout;
   }
@@ -50,7 +50,7 @@ public class ShopItems {
   }
 
   public ShopItem getByUUID(UUID uuid) {
-    return itemRepository.getByUUID(uuid);
+    return itemRepository.load(uuid);
   }
 
   private ShopItem withItem(UUID uuid, UnaryOperator<ShopItem> action) {

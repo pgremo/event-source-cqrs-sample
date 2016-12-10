@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
 
 @Component
-public class ShopItemRepository implements Repository<ShopItem> {
+public class ShopItemRepository implements Repository<ShopItem, UUID> {
 
   private final EventDescriptorRepository eventStreamStore;
   private final EventSerializer eventSerializer;
@@ -41,12 +41,12 @@ public class ShopItemRepository implements Repository<ShopItem> {
   }
 
   @Override
-  public ShopItem getByUUID(UUID uuid) {
+  public ShopItem load(UUID uuid) {
     return ShopItem.from(uuid, getRelatedEvents(uuid));
   }
 
   @Override
-  public ShopItem getByUUIDat(UUID uuid, Instant at) {
+  public ShopItem loadFrom(UUID uuid, Instant at) {
     return ShopItem.from(uuid,
       getRelatedEvents(uuid)
         .filter(evt -> !evt.when().isAfter(at)));

@@ -34,7 +34,7 @@ class EventSourcedShopItemRepositoryIntegrationSpec extends IntegrationSpec {
     when:
     shopItemRepository.save(stored)
     and:
-    ShopItem loaded = shopItemRepository.getByUUID(uuid)
+    ShopItem loaded = shopItemRepository.load(uuid)
     then:
     loaded.uuid == stored.uuid
     loaded.state == stored.state
@@ -48,8 +48,8 @@ class EventSourcedShopItemRepositoryIntegrationSpec extends IntegrationSpec {
     when:
     shopItemRepository.save(stored)
     and:
-    ShopItem bought = shopItemRepository.getByUUIDat(uuid, TOMORROW)
-    ShopItem paid = shopItemRepository.getByUUIDat(uuid, DAY_AFTER_TOMORROW)
+    ShopItem bought = shopItemRepository.loadFrom(uuid, TOMORROW)
+    ShopItem paid = shopItemRepository.loadFrom(uuid, DAY_AFTER_TOMORROW)
 
     then:
     bought.state == BOUGHT

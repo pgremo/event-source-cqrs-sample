@@ -3,12 +3,12 @@ package io.pillopl.eventsource.domain.shopitem;
 import java.time.Instant;
 import java.util.UUID;
 
-public interface Repository<T> {
+public interface Repository<T, K> {
 
   T save(T aggregate);
 
-  T getByUUID(UUID uuid);
+  T load(K uuid);
 
-  T getByUUIDat(UUID uuid, Instant at);
+  T loadFrom(K uuid, Instant at);
 
 }
