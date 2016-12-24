@@ -5,6 +5,7 @@ import io.pillopl.eventsource.domain.shopitem.ShopItem;
 
 import java.time.Instant;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import static io.pillopl.eventsource.domain.shopitem.ShopItemState.INITIALIZED;
 import static java.time.Instant.now;
@@ -17,7 +18,7 @@ public class ShopItemFixture {
 
 
   public static ShopItem initialized() {
-    return new ShopItem(null, emptyList(), INITIALIZED);
+    return new ShopItem(null, Stream.builder(), INITIALIZED);
   }
 
   public static ShopItem bought(UUID uuid) {

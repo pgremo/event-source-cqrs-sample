@@ -53,6 +53,6 @@ public class JdbcReadModel {
   }
 
   public ShopItemView getItemBy(UUID uuid) {
-    return jdbcTemplate.queryForObject(QUERY_FOR_ITEM_SQL, new Object[]{uuid}, new BeanPropertyRowMapper<>(ShopItemView.class));
+    return jdbcTemplate.queryForObject(QUERY_FOR_ITEM_SQL, new BeanPropertyRowMapper<>(ShopItemView.class), uuid);
   }
 }

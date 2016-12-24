@@ -1,5 +1,6 @@
 package io.pillopl.eventsource.domain.shopitem
 
+import io.pillopl.eventsource.domain.shopitem.events.DomainEvent
 import io.pillopl.eventsource.domain.shopitem.events.ItemBought
 import io.pillopl.eventsource.domain.shopitem.events.ItemPaid
 import io.pillopl.eventsource.domain.shopitem.events.ItemPaymentTimeout
@@ -19,9 +20,10 @@ class ShopItemSpec extends Specification {
   def 'should emit item bought event when buying initialized item'() {
     when:
     ShopItem tx = initialized().buy(uuid, now(), PAYMENT_DEADLINE_IN_HOURS)
+    def changes = tx.getUncommittedChanges()
     then:
-    tx.getUncommittedChanges().size() == 1
-    tx.getUncommittedChanges().head().type() == ItemBought.TYPE
+    changes.size() == 1
+    changes.head().type() == ItemBought.TYPE
   }
 
   def 'should calculate #deadline when buying at #buyingAt and expiration in hours #expiresIn'() {
@@ -79,9 +81,10 @@ class ShopItemSpec extends Specification {
   def 'should emit item paid event when paying for bought item'() {
     when:
     ShopItem tx = bought(uuid).pay(now())
+    def changes = tx.getUncommittedChanges()
     then:
-    tx.getUncommittedChanges().size() == 1
-    tx.getUncommittedChanges().head().type() == ItemPaid.TYPE
+    changes.size() == 1
+    changes.head().type() == ItemPaid.TYPE
   }
 
   def 'paying for an item should be idempotent'() {
@@ -96,9 +99,10 @@ class ShopItemSpec extends Specification {
   def 'should emit payment timeout event when marking item as payment missing'() {
     when:
     ShopItem tx = bought(uuid).markTimeout(now())
+    def changes = tx.getUncommittedChanges()
     then:
-    tx.getUncommittedChanges().size() == 1
-    tx.getUncommittedChanges().head().type() == ItemPaymentTimeout.TYPE
+    changes.size() == 1
+    changes.head().type() == ItemPaymentTimeout.TYPE
   }
 
   def 'marking payment timeout should be idempotent'() {
@@ -118,9 +122,10 @@ class ShopItemSpec extends Specification {
   def 'should emit item paid event when receiving missed payment'() {
     when:
     ShopItem tx = withTimeout(uuid).pay(now())
+    def changes = tx.getUncommittedChanges()
     then:
-    tx.getUncommittedChanges().size() == 1
-    tx.getUncommittedChanges().head().type() == ItemPaid.TYPE
+    changes.size() == 1
+    changes.head().type() == ItemPaid.TYPE
 
   }
 

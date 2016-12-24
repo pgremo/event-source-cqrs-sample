@@ -14,17 +14,14 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import static io.pillopl.eventsource.domain.shopitem.ShopItemState.*;
-import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Stream.concat;
-import static java.util.stream.Stream.of;
 
 @Value
 public class ShopItem {
 
   @Getter
   private final UUID uuid;
-  private final List<DomainEvent> changes;
+  private final Stream.Builder<DomainEvent> changes;
   private final ShopItemState state;
 
   public ShopItem buy(UUID uuid, Instant when, int hoursToPaymentTimeout) {
@@ -60,64 +57,48 @@ public class ShopItem {
     }
   }
 
-  private ShopItem apply(ItemBought event) {
+  public ShopItem apply(ItemBought event) {
     return new ShopItem(event.getUuid(), changes, BOUGHT);
   }
 
-  private ShopItem apply(ItemPaid event) {
+  public ShopItem apply(ItemPaid event) {
     return new ShopItem(event.getUuid(), changes, PAID);
   }
 
-  private ShopItem apply(ItemPaymentTimeout event) {
+  public ShopItem apply(ItemPaymentTimeout event) {
     return new ShopItem(event.getUuid(), changes, PAYMENT_MISSING);
   }
 
   public static ShopItem from(UUID uuid, Stream<DomainEvent> history) {
     return history
       .reduce(
-        new ShopItem(uuid, emptyList(), INITIALIZED),
-        (tx, event) -> tx.applyChange(event, false),
+        new ShopItem(uuid, Stream.builder(), INITIALIZED),
+        ShopItem::apply,
         (t1, t2) -> {
           throw new UnsupportedOperationException();
         }
       );
   }
 
-  private ShopItem applyChange(DomainEvent event, boolean isNew) {
-    final ShopItem item = apply(event);
-    if (isNew) {
-      return new ShopItem(item.getUuid(), appendChange(item, event), item.getState());
-    } else {
-      return item;
-    }
-  }
-
-  private List<DomainEvent> appendChange(ShopItem item, DomainEvent event) {
-    return concat(item.getChanges().stream(), of(event)).collect(toList());
-  }
-
   private ShopItem apply(DomainEvent event) {
-    if (event instanceof ItemPaid) {
-      return apply((ItemPaid) event);
-    } else if (event instanceof ItemBought) {
-      return apply((ItemBought) event);
-    } else if (event instanceof ItemPaymentTimeout) {
-      return apply((ItemPaymentTimeout) event);
-    } else {
+    try {
+      return new MethodInvoker().invoke(this, event);
+    } catch (NoSuchMethodException e) {
       throw new IllegalArgumentException(String.format("Cannot handle event %s", event.getClass()));
     }
   }
 
   private ShopItem applyChange(DomainEvent event) {
-    return applyChange(event, true);
+    final ShopItem item = apply(event);
+    return new ShopItem(item.getUuid(), item.changes.add(event), item.getState());
   }
 
   public List<DomainEvent> getUncommittedChanges() {
-    return changes;
+    return changes.build().collect(toList());
   }
 
   public ShopItem markChangesAsCommitted() {
-    return new ShopItem(uuid, emptyList(), state);
+    return new ShopItem(uuid, Stream.builder(), state);
   }
 
 }

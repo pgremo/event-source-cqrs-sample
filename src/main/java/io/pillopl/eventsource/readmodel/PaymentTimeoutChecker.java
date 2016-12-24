@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
-import java.util.List;
 
 import static java.sql.Timestamp.from;
 import static java.util.UUID.fromString;
@@ -34,12 +33,13 @@ class PaymentTimeoutChecker {
   @Transactional
   void checkPaymentTimeouts() {
     final Instant now = Instant.now();
-    final List<String> itemsWithPaymentTimeouts = jdbcTemplate.queryForList(
+    jdbcTemplate.query(
       ITEMS_TIMEOUT_SQL_QUERY,
-      String.class,
+      rs -> {
+        String uuid = rs.getString("uuid");
+        log.info("Marking payment {} that did not arrive at {}", uuid, now);
+        shopItems.markPaymentTimeout(new MarkPaymentTimeout(fromString(uuid), now));
+      },
       from(now));
-    log.info("Marking {} items that payment did not arrive at {}", itemsWithPaymentTimeouts.size(), now);
-    itemsWithPaymentTimeouts
-      .forEach(uuid -> shopItems.markPaymentTimeout(new MarkPaymentTimeout(fromString(uuid), now)));
   }
 }
