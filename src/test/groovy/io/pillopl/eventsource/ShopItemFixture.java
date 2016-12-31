@@ -3,22 +3,21 @@ package io.pillopl.eventsource;
 
 import io.pillopl.eventsource.domain.shopitem.ShopItem;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.stream.Stream;
 
 import static io.pillopl.eventsource.domain.shopitem.ShopItemState.INITIALIZED;
-import static java.time.Instant.now;
-import static java.util.Collections.emptyList;
+import static java.time.LocalDateTime.now;
 
 public class ShopItemFixture {
 
-  private static final Instant ANY_TIME = now();
+  private static final LocalDateTime ANY_TIME = now();
   private static final int ANY_NUMBER_OF_HOURS_TO_PAYMENT_TIMEOUT = 48;
 
 
   public static ShopItem initialized() {
-    return new ShopItem(null, Stream.builder(), INITIALIZED);
+    return new ShopItem(null, Stream.empty(), INITIALIZED);
   }
 
   public static ShopItem bought(UUID uuid) {

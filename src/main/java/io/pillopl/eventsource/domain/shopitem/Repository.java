@@ -1,7 +1,6 @@
 package io.pillopl.eventsource.domain.shopitem;
 
-import java.time.Instant;
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 public interface Repository<T, K> {
 
@@ -9,6 +8,6 @@ public interface Repository<T, K> {
 
   T load(K uuid);
 
-  T loadFrom(K uuid, Instant at);
+  T loadFrom(K uuid, LocalDateTime at);
 
 }

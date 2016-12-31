@@ -7,7 +7,7 @@ import io.pillopl.eventsource.domain.shopitem.events.ItemPaymentTimeout;
 import lombok.Getter;
 import lombok.Value;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
@@ -21,10 +21,10 @@ public class ShopItem {
 
   @Getter
   private final UUID uuid;
-  private final Stream.Builder<DomainEvent> changes;
+  private final Stream<DomainEvent> changes;
   private final ShopItemState state;
 
-  public ShopItem buy(UUID uuid, Instant when, int hoursToPaymentTimeout) {
+  public ShopItem buy(UUID uuid, LocalDateTime when, int hoursToPaymentTimeout) {
     if (state == INITIALIZED) {
       return applyChange(new ItemBought(uuid, when, calculatePaymentTimeoutDate(when, hoursToPaymentTimeout)));
     } else {
@@ -32,20 +32,20 @@ public class ShopItem {
     }
   }
 
-  private Instant calculatePaymentTimeoutDate(Instant boughtAt, int hoursToPaymentTimeout) {
-    final Instant paymentTimeout = boughtAt.plus(hoursToPaymentTimeout, ChronoUnit.HOURS);
+  private LocalDateTime calculatePaymentTimeoutDate(LocalDateTime boughtAt, int hoursToPaymentTimeout) {
+    final LocalDateTime paymentTimeout = boughtAt.plus(hoursToPaymentTimeout, ChronoUnit.HOURS);
     if (paymentTimeout.isBefore(boughtAt)) {
       throw new IllegalArgumentException("Payment timeout day is before buying date!");
     }
     return paymentTimeout;
   }
 
-  public ShopItem pay(Instant when) {
+  public ShopItem pay(LocalDateTime when) {
     throwIfStateIs(INITIALIZED, "Cannot pay for not existing item");
     return state == PAID ? this : applyChange(new ItemPaid(uuid, when));
   }
 
-  public ShopItem markTimeout(Instant when) {
+  public ShopItem markTimeout(LocalDateTime when) {
     throwIfStateIs(INITIALIZED, "Payment is not missing yet");
     throwIfStateIs(PAID, "Item already paid");
     return state == BOUGHT ? applyChange(new ItemPaymentTimeout(uuid, when)) : this;
@@ -72,7 +72,7 @@ public class ShopItem {
   public static ShopItem from(UUID uuid, Stream<DomainEvent> history) {
     return history
       .reduce(
-        new ShopItem(uuid, Stream.builder(), INITIALIZED),
+        new ShopItem(uuid, Stream.empty(), INITIALIZED),
         ShopItem::apply,
         (t1, t2) -> {
           throw new UnsupportedOperationException();
@@ -89,16 +89,16 @@ public class ShopItem {
   }
 
   private ShopItem applyChange(DomainEvent event) {
-    final ShopItem item = apply(event);
-    return new ShopItem(item.getUuid(), item.changes.add(event), item.getState());
+    ShopItem item = apply(event);
+    return new ShopItem(item.getUuid(), Stream.concat(item.changes, Stream.of(event)), item.getState());
   }
 
   public List<DomainEvent> getUncommittedChanges() {
-    return changes.build().collect(toList());
+    return changes.collect(toList());
   }
 
   public ShopItem markChangesAsCommitted() {
-    return new ShopItem(uuid, Stream.builder(), state);
+    return new ShopItem(uuid, Stream.empty(), state);
   }
 
 }

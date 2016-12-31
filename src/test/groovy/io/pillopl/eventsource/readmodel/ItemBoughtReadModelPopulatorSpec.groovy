@@ -5,15 +5,16 @@ import spock.lang.Specification
 import spock.lang.Subject
 
 import java.time.Instant
+import java.time.LocalDateTime
 
-import static java.time.Instant.now
+import static java.time.LocalDateTime.now
 import static java.util.UUID.randomUUID
 
 class ItemBoughtReadModelPopulatorSpec extends Specification {
 
   private static final UUID ANY_UUID = randomUUID()
-  private static final Instant ANY_DATE = now()
-  private static final Instant ANY_PAYMENT_TIMEOUT = now()
+  private static final LocalDateTime ANY_DATE = now()
+  private static final LocalDateTime ANY_PAYMENT_TIMEOUT = now()
 
   JdbcReadModel jdbcReadModel = Mock()
 

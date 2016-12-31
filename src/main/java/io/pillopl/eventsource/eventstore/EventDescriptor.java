@@ -1,12 +1,14 @@
 package io.pillopl.eventsource.eventstore;
 
 import lombok.Getter;
+import lombok.ToString;
 
 import javax.persistence.*;
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
+@ToString(callSuper = true, doNotUseGetters = true)
 public class EventDescriptor {
 
   @Id
@@ -25,13 +27,13 @@ public class EventDescriptor {
 
   @Getter
   @Column(nullable = false)
-  private Instant occurredAt = Instant.now();
+  private LocalDateTime occurredAt = LocalDateTime.now();
 
   @Getter
   @Column(nullable = false, length = 60)
   private String type;
 
-  EventDescriptor(String body, UUID aggregateId, Instant occurredAt, String type) {
+  EventDescriptor(String body, UUID aggregateId, LocalDateTime occurredAt, String type) {
     this.body = body;
     this.aggregateId = aggregateId;
     this.occurredAt = occurredAt;

@@ -6,22 +6,21 @@ import io.pillopl.eventsource.integration.IntegrationSpec
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Subject
 
-import java.time.Instant
+import java.time.LocalDateTime
 
 import static io.pillopl.eventsource.ShopItemFixture.initialized
 import static io.pillopl.eventsource.domain.shopitem.ShopItemState.BOUGHT
 import static io.pillopl.eventsource.domain.shopitem.ShopItemState.PAID
-import static java.time.LocalDate.now
-import static java.time.ZoneId.systemDefault
+import static java.time.LocalDateTime.now
 import static java.time.temporal.ChronoUnit.DAYS
 
 class EventSourcedShopItemRepositoryIntegrationSpec extends IntegrationSpec {
 
   private static final UUID uuid = UUID.randomUUID()
   private static final int PAYMENT_DEADLINE_IN_HOURS = 48
-  private static final Instant TODAY = now().atStartOfDay(systemDefault()).toInstant()
-  private static final Instant TOMORROW = TODAY.plus(1, DAYS)
-  private static final Instant DAY_AFTER_TOMORROW = TOMORROW.plus(1, DAYS)
+  private static final LocalDateTime TODAY = now().truncatedTo(DAYS)
+  private static final LocalDateTime TOMORROW = TODAY.plus(1, DAYS)
+  private static final LocalDateTime DAY_AFTER_TOMORROW = TOMORROW.plus(1, DAYS)
 
 
   @Subject

@@ -1,6 +1,5 @@
 package io.pillopl.eventsource.domain.shopitem
 
-import io.pillopl.eventsource.domain.shopitem.events.DomainEvent
 import io.pillopl.eventsource.domain.shopitem.events.ItemBought
 import io.pillopl.eventsource.domain.shopitem.events.ItemPaid
 import io.pillopl.eventsource.domain.shopitem.events.ItemPaymentTimeout
@@ -8,8 +7,8 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 import static io.pillopl.eventsource.ShopItemFixture.*
-import static java.time.Instant.now
-import static java.time.Instant.parse
+import static java.time.LocalDateTime.now
+import static java.time.LocalDateTime.parse
 
 @Unroll
 class ShopItemSpec extends Specification {
@@ -33,12 +32,12 @@ class ShopItemSpec extends Specification {
     ((ItemBought) tx.getUncommittedChanges().head()).paymentTimeoutDate == parse(deadline)
     where:
     buyingAt               | expiresIn || deadline
-    "1995-10-23T10:12:35Z" | 0         || "1995-10-23T10:12:35Z"
-    "1995-10-23T10:12:35Z" | 1         || "1995-10-23T11:12:35Z"
-    "1995-10-23T10:12:35Z" | 2         || "1995-10-23T12:12:35Z"
-    "1995-10-23T10:12:35Z" | 20        || "1995-10-24T06:12:35Z"
-    "1995-10-23T10:12:35Z" | 24        || "1995-10-24T10:12:35Z"
-    "1995-10-23T10:12:35Z" | 48        || "1995-10-25T10:12:35Z"
+    "1995-10-23T10:12:35" | 0         || "1995-10-23T10:12:35"
+    "1995-10-23T10:12:35" | 1         || "1995-10-23T11:12:35"
+    "1995-10-23T10:12:35" | 2         || "1995-10-23T12:12:35"
+    "1995-10-23T10:12:35" | 20        || "1995-10-24T06:12:35"
+    "1995-10-23T10:12:35" | 24        || "1995-10-24T10:12:35"
+    "1995-10-23T10:12:35" | 48        || "1995-10-25T10:12:35"
   }
 
   def 'Payment expiration date cannot be in the past'() {

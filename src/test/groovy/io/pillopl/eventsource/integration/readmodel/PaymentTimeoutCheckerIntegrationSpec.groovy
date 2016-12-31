@@ -10,7 +10,7 @@ import spock.lang.Subject
 
 import static io.pillopl.eventsource.CommandFixture.buyItemCommand
 import static io.pillopl.eventsource.CommandFixture.payItemCommand
-import static java.time.Instant.now
+import static java.time.LocalDateTime.now
 import static java.time.temporal.ChronoUnit.HOURS
 import static java.util.UUID.randomUUID
 

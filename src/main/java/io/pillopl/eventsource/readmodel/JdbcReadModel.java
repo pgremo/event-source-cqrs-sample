@@ -6,9 +6,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static java.sql.Timestamp.from;
+import static java.sql.Timestamp.valueOf;
 
 @Component
 public class JdbcReadModel {
@@ -37,19 +39,19 @@ public class JdbcReadModel {
     this.jdbcTemplate = jdbcTemplate;
   }
 
-  void updateOrCreateItemAsBlocked(UUID uuid, Instant when, Instant paymentTimeoutDate) {
-    final int affectedRows = jdbcTemplate.update(UPDATE_BOUGHT_ITEM_SQL, from(paymentTimeoutDate), uuid);
+  void updateOrCreateItemAsBlocked(UUID uuid, LocalDateTime when, LocalDateTime paymentTimeoutDate) {
+    final int affectedRows = jdbcTemplate.update(UPDATE_BOUGHT_ITEM_SQL, valueOf(paymentTimeoutDate), uuid);
     if (affectedRows == 0) {
-      jdbcTemplate.update(INSERT_BOUGHT_ITEM_SQL, uuid, from(when), from(paymentTimeoutDate));
+      jdbcTemplate.update(INSERT_BOUGHT_ITEM_SQL, uuid, valueOf(when), valueOf(paymentTimeoutDate));
     }
   }
 
-  void updateItemAsPaid(UUID uuid, Instant when) {
-    jdbcTemplate.update(UPDATE_PAID_ITEM_SQL, from(when), uuid);
+  void updateItemAsPaid(UUID uuid, LocalDateTime when) {
+    jdbcTemplate.update(UPDATE_PAID_ITEM_SQL, valueOf(when), uuid);
   }
 
-  void updateItemAsPaymentMissing(UUID uuid, Instant when) {
-    jdbcTemplate.update(UPDATE_PAYMENT_MISSING_SQL, from(when), uuid);
+  void updateItemAsPaymentMissing(UUID uuid, LocalDateTime when) {
+    jdbcTemplate.update(UPDATE_PAYMENT_MISSING_SQL, valueOf(when), uuid);
   }
 
   public ShopItemView getItemBy(UUID uuid) {

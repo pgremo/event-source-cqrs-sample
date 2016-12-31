@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @JsonTypeInfo(
@@ -21,7 +22,7 @@ public interface DomainEvent {
     return getClass().getName();
   }
 
-  Instant when();
+  LocalDateTime when();
 
   UUID uuid();
 }

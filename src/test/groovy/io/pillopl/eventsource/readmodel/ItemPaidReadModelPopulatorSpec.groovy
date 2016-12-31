@@ -4,15 +4,15 @@ import io.pillopl.eventsource.domain.shopitem.events.ItemPaid
 import spock.lang.Specification
 import spock.lang.Subject
 
-import java.time.Instant
+import java.time.LocalDateTime
 
-import static java.time.Instant.now
+import static java.time.LocalDateTime.now
 import static java.util.UUID.randomUUID
 
 class ItemPaidReadModelPopulatorSpec extends Specification {
 
   private static final UUID ANY_UUID = randomUUID()
-  private static final Instant ANY_DATE = now()
+  private static final LocalDateTime ANY_DATE = now()
 
   JdbcReadModel jdbcReadModel = Mock()
 

@@ -7,16 +7,16 @@ import io.pillopl.eventsource.readmodel.ShopItemView
 import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Subject
 
-import java.time.Instant
+import java.time.LocalDateTime
 
 import static io.pillopl.eventsource.CommandFixture.*
-import static java.time.Instant.parse
+import static java.time.LocalDateTime.parse
 
 class JdbcReadModelIntegrationSpec extends IntegrationSpec {
 
-  private static final Instant ANY_TIME = parse("1995-10-23T10:12:35Z")
-  private static final Instant ANY_OTHER_TIME = ANY_TIME.plusSeconds(100)
-  private static final Instant YET_ANOTHER_TIME = ANY_OTHER_TIME.plusSeconds(100)
+  private static final LocalDateTime ANY_TIME = parse("1995-10-23T10:12:35")
+  private static final LocalDateTime ANY_OTHER_TIME = ANY_TIME.plusSeconds(100)
+  private static final LocalDateTime YET_ANOTHER_TIME = ANY_OTHER_TIME.plusSeconds(100)
 
   @Subject
   @Autowired
@@ -33,9 +33,9 @@ class JdbcReadModelIntegrationSpec extends IntegrationSpec {
     ShopItemView tx = readModel.getItemBy(itemUUID)
     tx.uuid == itemUUID.toString()
     tx.status == 'BOUGHT'
-    tx.when_bought.toInstant() == ANY_TIME
+    tx.when_bought.toLocalDateTime() == ANY_TIME
     tx.when_paid == null
-    tx.when_payment_timeout.toInstant() == parse("1995-10-24T10:12:35Z")
+    tx.when_payment_timeout.toLocalDateTime() == parse("1995-10-24T10:12:35")
     tx.when_payment_marked_as_missing == null
   }
 
@@ -47,7 +47,7 @@ class JdbcReadModelIntegrationSpec extends IntegrationSpec {
     shopItems.buy(buyItemCommand(itemUUID, ANY_OTHER_TIME))
     then:
     ShopItemView tx = readModel.getItemBy(itemUUID)
-    tx.when_bought.toInstant() == ANY_TIME
+    tx.when_bought.toLocalDateTime() == ANY_TIME
   }
 
   def 'should update item as paid'() {
@@ -58,7 +58,7 @@ class JdbcReadModelIntegrationSpec extends IntegrationSpec {
     shopItems.pay(payItemCommand(itemUUID, ANY_OTHER_TIME))
     then:
     ShopItemView tx = readModel.getItemBy(itemUUID)
-    tx.when_paid.toInstant() == ANY_OTHER_TIME
+    tx.when_paid.toLocalDateTime() == ANY_OTHER_TIME
   }
 
   def 'paying should be idempotent on read side'() {
@@ -71,7 +71,7 @@ class JdbcReadModelIntegrationSpec extends IntegrationSpec {
     shopItems.pay(payItemCommand(itemUUID, YET_ANOTHER_TIME))
     then:
     ShopItemView tx = readModel.getItemBy(itemUUID)
-    tx.when_paid.toInstant() == ANY_OTHER_TIME
+    tx.when_paid.toLocalDateTime() == ANY_OTHER_TIME
   }
 
   def 'should update item as payment missed'() {
@@ -82,7 +82,7 @@ class JdbcReadModelIntegrationSpec extends IntegrationSpec {
     shopItems.markPaymentTimeout(markPaymentTimeoutCommand(itemUUID, ANY_OTHER_TIME))
     then:
     ShopItemView tx = readModel.getItemBy(itemUUID)
-    tx.when_payment_marked_as_missing.toInstant() == ANY_OTHER_TIME
+    tx.when_payment_marked_as_missing.toLocalDateTime() == ANY_OTHER_TIME
   }
 
   def 'updating item as payment missed should be idempotent'() {
@@ -95,7 +95,7 @@ class JdbcReadModelIntegrationSpec extends IntegrationSpec {
     shopItems.markPaymentTimeout(markPaymentTimeoutCommand(itemUUID, YET_ANOTHER_TIME))
     then:
     ShopItemView tx = readModel.getItemBy(itemUUID)
-    tx.when_payment_marked_as_missing.toInstant() == ANY_OTHER_TIME
+    tx.when_payment_marked_as_missing.toLocalDateTime() == ANY_OTHER_TIME
   }
 
 }

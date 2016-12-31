@@ -10,8 +10,10 @@ import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 import static java.sql.Timestamp.from;
+import static java.sql.Timestamp.valueOf;
 import static java.util.UUID.fromString;
 
 @Component
@@ -32,7 +34,7 @@ class PaymentTimeoutChecker {
   @Scheduled(fixedDelay = 1000 * 60 * 60)
   @Transactional
   void checkPaymentTimeouts() {
-    final Instant now = Instant.now();
+    final LocalDateTime now = LocalDateTime.now();
     jdbcTemplate.query(
       ITEMS_TIMEOUT_SQL_QUERY,
       rs -> {
@@ -40,6 +42,6 @@ class PaymentTimeoutChecker {
         log.info("Marking payment {} that did not arrive at {}", uuid, now);
         shopItems.markPaymentTimeout(new MarkPaymentTimeout(fromString(uuid), now));
       },
-      from(now));
+      valueOf(now));
   }
 }

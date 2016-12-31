@@ -2,25 +2,20 @@ package io.pillopl.eventsource.eventstore;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.pillopl.eventsource.domain.shopitem.events.DomainEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-
-import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
 @Component
 class EventSerializer {
 
   private final ObjectMapper objectMapper;
 
-  EventSerializer() {
-    objectMapper = new ObjectMapper()
-      .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
-      .registerModule(new JavaTimeModule())
-      .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+  @Autowired
+  EventSerializer(ObjectMapper objectMapper) {
+    this.objectMapper = objectMapper;
   }
 
   EventDescriptor serialize(DomainEvent event) {

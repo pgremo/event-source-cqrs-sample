@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -15,7 +15,7 @@ public class ItemPaymentTimeout implements DomainEvent {
   public static final String TYPE = "item.payment.timeout";
 
   private UUID uuid;
-  private Instant when;
+  private LocalDateTime when;
 
   @Override
   public String type() {
@@ -23,7 +23,7 @@ public class ItemPaymentTimeout implements DomainEvent {
   }
 
   @Override
-  public Instant when() {
+  public LocalDateTime when() {
     return when;
   }
 

@@ -5,11 +5,11 @@ import io.pillopl.eventsource.domain.shopitem.commands.Buy;
 import io.pillopl.eventsource.domain.shopitem.commands.MarkPaymentTimeout;
 import io.pillopl.eventsource.domain.shopitem.commands.Pay;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static java.math.BigDecimal.ZERO;
-import static java.time.Instant.now;
+import static java.time.LocalDateTime.now;
 
 public class CommandFixture {
 
@@ -17,7 +17,7 @@ public class CommandFixture {
     return new Buy(uuid, ZERO, now());
   }
 
-  public static Buy buyItemCommand(UUID uuid, Instant when) {
+  public static Buy buyItemCommand(UUID uuid, LocalDateTime when) {
     return new Buy(uuid, ZERO, when);
   }
 
@@ -25,7 +25,7 @@ public class CommandFixture {
     return new Pay(uuid, now());
   }
 
-  public static Pay payItemCommand(UUID uuid, Instant when) {
+  public static Pay payItemCommand(UUID uuid, LocalDateTime when) {
     return new Pay(uuid, when);
   }
 
@@ -34,7 +34,7 @@ public class CommandFixture {
     return new MarkPaymentTimeout(uuid, now());
   }
 
-  public static MarkPaymentTimeout markPaymentTimeoutCommand(UUID uuid, Instant when) {
+  public static MarkPaymentTimeout markPaymentTimeoutCommand(UUID uuid, LocalDateTime when) {
     return new MarkPaymentTimeout(uuid, when);
   }
 }
